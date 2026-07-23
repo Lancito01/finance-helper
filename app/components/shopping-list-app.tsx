@@ -1175,8 +1175,8 @@ export function ShoppingListApp() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <aside className="w-full rounded-2xl border border-white/10 bg-zinc-900/70 p-4 shadow-2xl shadow-black/30 backdrop-blur">
+    <div className="flex flex-col gap-5">
+      <aside className="w-full rounded-3xl border border-white/[0.1] bg-slate-950/55 p-4 shadow-2xl shadow-black/25 backdrop-blur-xl md:p-5">
         <div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -1362,7 +1362,7 @@ export function ShoppingListApp() {
         </div>
       </aside>
 
-      <section className="rounded-2xl border border-white/10 bg-zinc-900/70 p-4 shadow-2xl shadow-black/30 backdrop-blur">
+      <section className="rounded-3xl border border-white/[0.1] bg-slate-950/55 p-4 shadow-2xl shadow-black/25 backdrop-blur-xl md:p-5">
         {!selectedList && (
           <p className="text-sm text-zinc-400">
             Select or create a list to start adding entries.
@@ -1372,8 +1372,13 @@ export function ShoppingListApp() {
         {selectedList && (
           <div className="space-y-4">
             {/* Budget header */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold text-zinc-100">{selectedList.name}</h2>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-300/70">
+                  {selectedList.type === "budget" ? "Active budget" : "Active list"}
+                </p>
+                <h2 className="text-xl font-semibold tracking-tight text-white">{selectedList.name}</h2>
+              </div>
               {selectedList.type === "budget" ? (
                 <p
                   className={`rounded-full border px-3 py-1 text-sm font-semibold ${
@@ -1558,7 +1563,7 @@ export function ShoppingListApp() {
                               : "Check all"}
                         </button>
                       </div>
-                      <div className="hidden md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_8.5rem_11rem] items-center gap-3 px-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                      <div className="hidden md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_12rem_11rem] items-center gap-3 px-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
                         <span className="text-center">Check</span>
                         <span className="text-center">Move</span>
                         <span>Entry</span>
@@ -1690,6 +1695,19 @@ export function ShoppingListApp() {
                             const originalSubtotalDisplay: ReactNode = isTbd
                               ? "TBD"
                               : <FormattedCurrency value={subtotalOriginal} currency={item.currency} />;
+                            const selectedCurrencyDiffers = item.currency !== preferredCurrency;
+                            const convertedSubtotalDisplay: ReactNode = isTbd
+                              ? null
+                              : isConversionUnavailable
+                                ? "Rates"
+                                : selectedCurrencyDiffers
+                                  ? (
+                                    <FormattedCurrency
+                                      value={originalSubtotalPreferred ?? 0}
+                                      currency={preferredCurrency}
+                                    />
+                                  )
+                                  : null;
 
                             return (
                               <SortableRow
@@ -1828,16 +1846,34 @@ export function ShoppingListApp() {
                                   );
 
                                   const subtotalDisplay = (
-                                    <span className="flex min-w-0 flex-col text-left tabular-nums md:items-end md:text-right">
-                                      <span className={`text-sm font-semibold ${appliedSubtotalColor}`}>
-                                        {appliedSubtotalDisplay}
+                                    <div className="flex min-w-0 flex-col gap-1 text-left tabular-nums md:items-end md:text-right">
+                                      <span className="flex items-baseline gap-1.5 md:justify-end">
+                                        <span className="text-[10px] font-bold uppercase tracking-wide text-cyan-200/55">
+                                          After offsets
+                                        </span>
+                                        <span className={`text-sm font-semibold ${appliedSubtotalColor}`}>
+                                          {appliedSubtotalDisplay}
+                                        </span>
                                       </span>
-                                      <span
-                                        className={`text-[11px] font-semibold ${originalSubtotalColor}`}
-                                      >
-                                        {originalSubtotalDisplay}
+                                      <span className="flex items-baseline gap-1.5 md:justify-end">
+                                        <span className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">
+                                          Input
+                                        </span>
+                                        <span className={`text-[11px] font-semibold ${originalSubtotalColor}`}>
+                                          {originalSubtotalDisplay}
+                                        </span>
                                       </span>
-                                    </span>
+                                      {convertedSubtotalDisplay && (
+                                        <span className="flex items-baseline gap-1.5 md:justify-end">
+                                          <span className="text-[10px] font-bold uppercase tracking-wide text-violet-200/55">
+                                            Converted
+                                          </span>
+                                          <span className="text-[11px] font-semibold text-violet-200/80">
+                                            {convertedSubtotalDisplay}
+                                          </span>
+                                        </span>
+                                      )}
+                                    </div>
                                   );
 
                                   const editButton = (
@@ -1871,7 +1907,7 @@ export function ShoppingListApp() {
                                   if (isTallMode) {
                                     return (
                                       <div
-                                        className={`flex flex-col gap-2 rounded-xl border px-3 py-2.5 md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_8.5rem_11rem] md:items-center md:gap-3 ${rowTheme} ${
+                                        className={`flex flex-col gap-2 rounded-2xl border px-3 py-3 md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_12rem_11rem] md:items-center md:gap-3 ${rowTheme} ${
                                           isDragging ? "ring-1 ring-cyan-400/40 opacity-90" : ""
                                         }`}
                                       >
@@ -1918,7 +1954,7 @@ export function ShoppingListApp() {
 
                                   return (
                                     <div
-                                      className={`flex flex-col gap-2 rounded-xl border px-3 py-2.5 md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_8.5rem_11rem] md:items-center md:gap-3 ${rowTheme} ${
+                                      className={`flex flex-col gap-2 rounded-2xl border px-3 py-3 md:grid md:grid-cols-[2rem_2rem_minmax(0,1fr)_8.5rem_12rem_11rem] md:items-center md:gap-3 ${rowTheme} ${
                                         isDragging ? "ring-1 ring-cyan-400/40 opacity-90" : ""
                                       }`}
                                     >

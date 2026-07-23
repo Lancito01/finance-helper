@@ -11,13 +11,17 @@ export default async function Home() {
   const isAuthenticated = Boolean(session?.user?.email);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-5 md:p-8">
-      <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
+    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-1 flex-col px-4 py-5 sm:px-6 md:px-8 md:py-8">
+      <header className="mb-7 flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+          <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-300/80">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_16px_rgba(52,211,153,0.9)]" />
+            Personal finance
+          </div>
+          <h1 className="text-3xl font-bold tracking-[-0.04em] text-white sm:text-4xl">
             Budgetly
           </h1>
-          <p className="text-base text-zinc-400">
+          <p className="mt-1.5 text-sm text-zinc-400 sm:text-base">
             Manage budgets, track expenses and income, and keep your finances in sync.
           </p>
         </div>
@@ -43,7 +47,7 @@ export default async function Home() {
 
       {isAuthenticated && (
         <main className="flex-1">
-          <div className="mb-4 w-full rounded-xl border border-white/10 bg-zinc-900/60 px-4 py-3 text-base text-zinc-300 backdrop-blur">
+          <div className="mb-5 w-full rounded-2xl border border-white/[0.1] bg-white/[0.035] px-4 py-3 text-sm text-zinc-300 shadow-xl shadow-black/10 backdrop-blur-xl">
             Signed in as{" "}
             <span className="font-semibold text-zinc-100">
               {session?.user?.email}
